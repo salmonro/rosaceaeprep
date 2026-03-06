@@ -1,7 +1,73 @@
-<h1>Server Announcements</h1>
+<!DOCTYPE html>
+<html>
 
-<iframe 
-src="https://discord.com/widget?id=YOUR_SERVER_ID&theme=dark"
-width="350"
-height="500">
-</iframe>
+<head>
+  <title>Server Announcements</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Match the rest of the site */
+    body {
+      background: #0b0f1c;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    h1 {
+      font-size: 70px;
+      color: #ff6ea8;
+      margin-bottom: 30px;
+    }
+
+    nav {
+      margin-top: 20px;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      font-size: 20px;
+      text-decoration: none;
+    }
+
+    iframe {
+      border: none;
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body data-page="logs">
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="usabo.html">USABO</a></li>
+      <li><a href="apbio.html">AP Bio</a></li>
+      <li><a href="discord.html">Join the Discord</a></li>
+      <li><a href="logs.html">Log</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <h1>Server Announcements</h1>
+
+  <!-- Replace YOUR_SERVER_ID with your actual Discord server ID -->
+  <iframe 
+    src="https://discord.com/widget?id=YOUR_SERVER_ID&theme=dark"
+    width="350"
+    height="500">
+  </iframe>
+
+</body>
+
+</html>
