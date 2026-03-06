@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>USABO Practice</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body data-page="usabo">
+
+<nav>
+
+<ul>
+
+<li><a href="index.html">Home</a></li>
+<li><a href="usabo.html">USABO</a></li>
+<li><a href="apbio.html">AP Bio</a></li>
+<li><a href="discord.html">Join the Discord</a></li>
+<li><a href="logs.html">Log</a></li>
+<li><a href="about.html">About</a></li>
+
+</ul>
+
+</nav>
+
+<h1>USABO Practice</h1>
+
+<select onchange="filterTopic(this.value)">
+
+<option value="Cell Biology & Biochemistry">
+Cell Biology & Biochemistry
+</option>
+
+<option value="Anatomy & Physiology">
+Anatomy & Physiology
+</option>
+
+<option value="Genetics">
+Genetics
+</option>
+
+<option value="Ethology">
+Ethology
+</option>
+
+<option value="Biosystematics">
+Biosystematics
+</option>
+
+</select>
+
+<h2 id="question"></h2>
+
+<div id="answers"></div>
+
+<button onclick="nextQuestion()">Next Question</button>
+
+<script src="questions.js"></script>
+
+<script src="quiz.js"></script>
+
+</body>
+
+</html>
