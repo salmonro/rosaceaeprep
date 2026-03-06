@@ -5,56 +5,87 @@
   <title>Join the Discord</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Optional extra styling to match your homepage */
+    /* Page-specific styling */
     body {
-      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26);
+      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26); /* dark gradient */
       color: white;
       font-family: 'Rubik', Arial, sans-serif;
       text-align: center;
-      padding-top: 150px;
-    }
-
-    h1 {
-      font-size: 70px;
-      color: #ff6ea8;
-    }
-
-    p {
-      font-size: 22px;
-      opacity: 0.8;
+      padding-top: 50px;
     }
 
     nav {
-      margin-top: 50px;
+      margin-bottom: 50px;
     }
 
     nav ul {
       list-style: none;
-      padding: 0;
       display: flex;
       justify-content: center;
       gap: 20px;
+      padding: 0;
+      margin: 0;
     }
 
     nav a {
-      color: white;
+      color: #d47a9a; /* muted pink */
       font-size: 20px;
       text-decoration: none;
+      font-weight: bold;
     }
 
-    button {
+    nav a:hover {
+      color: #c75c85; /* slightly darker hover */
+    }
+
+    h1 {
+      font-size: 70px;
+      color: #d47a9a; /* muted pink */
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 22px;
+      color: #ccc;
+      margin-bottom: 30px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    a button {
       margin-top: 20px;
-      padding: 10px 25px;
+      padding: 12px 30px;
       font-size: 18px;
       border: none;
       border-radius: 8px;
-      background-color: #ff6ea8;
+      background-color: #d47a9a; /* muted pink */
       color: white;
       cursor: pointer;
+      font-family: 'Rubik', Arial, sans-serif;
+      font-weight: 500;
+      transition: background 0.3s;
     }
 
-    button:hover {
-      background-color: #ff82b5;
+    a button:hover {
+      background-color: #c75c85; /* slightly darker hover */
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      h1 {
+        font-size: 50px;
+      }
+
+      a button {
+        width: 80%;
+      }
     }
   </style>
 </head>
