@@ -1,109 +1,87 @@
-let current = 0;
 let filteredQuestions = [];
+let current = 0;
 
-/* Detect which page we are on */
+async function startQuiz(category){
 
-const page = document.body.dataset.page;
+await loadQuestions();
 
-if(page === "usabo"){
-filteredQuestions = questions.filter(q => q.category === "USABO");
+filteredQuestions = questions.filter(q => q.category === category);
+
+current = 0;
+
+loadQuestion();
+
 }
 
-if(page === "apbio"){
-filteredQuestions = questions.filter(q => q.category === "AP Bio");
+function filterTopic(topic){
+
+filteredQuestions = questions.filter(
+q => q.category === "USABO" && q.topic === topic
+);
+
+current = 0;
+
+loadQuestion();
+
 }
-
-
-/* Load Question */
 
 function loadQuestion(){
 
+if(filteredQuestions.length === 0){
+document.getElementById("question").innerHTML = "No questions found.";
+return;
+}
+
 const q = filteredQuestions[current];
 
-document.getElementById("question").innerText = q.question;
+document.getElementById("question").innerHTML = q.question;
 
 const answers = document.getElementById("answers");
 
-answers.innerHTML="";
+answers.innerHTML = "";
 
 q.answers.forEach((a,i)=>{
 
-const div = document.createElement("div");
+const btn = document.createElement("button");
 
-div.className="answer";
+btn.innerText = a;
 
-div.innerText=a;
+btn.onclick = ()=>checkAnswer(i);
 
-div.onclick=()=>selectAnswer(div,i);
-
-answers.appendChild(div);
+answers.appendChild(btn);
 
 });
 
 }
 
-
-/* Select Answer */
-
-function selectAnswer(el,i){
+function checkAnswer(i){
 
 const q = filteredQuestions[current];
 
-if(i === q.correct){
+const buttons = document.querySelectorAll("#answers button");
 
-el.classList.add("correct");
+buttons.forEach((btn,index)=>{
 
-}else{
-
-el.classList.add("wrong");
-
+if(index === q.correct){
+btn.style.background = "green";
 }
 
+if(index === i && i !== q.correct){
+btn.style.background = "red";
 }
 
+});
 
-/* Next Question */
+}
 
 function nextQuestion(){
 
 current++;
 
 if(current >= filteredQuestions.length){
-
 current = 0;
-
 }
 
 loadQuestion();
 
 }
-
-
-/* Topic Filter */
-
-function filterTopic(topic){
-
-if(document.body.dataset.page === "usabo"){
-
-filteredQuestions = questions.filter(
-q => q.category === "USABO" && q.topic === topic
-);
-
-}
-
-if(document.body.dataset.page === "apbio"){
-
-filteredQuestions = questions.filter(
-q => q.category === "AP Bio" && q.topic === topic
-);
-
-}
-
-current = 0;
-
-loadQuestion();
-
-}
-
-
-loadQuestion();
