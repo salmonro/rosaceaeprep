@@ -3,34 +3,46 @@ let current = 0;
 let currentCategory = "";
 let currentTopic = "";
 
-// Start quiz for a category (USABO / AP Bio)
+// Key for localStorage
+function storageKey(category, topic) {
+  return `progress_${category}_${topic}`;
+}
+
+// Get completed count from localStorage
+function getCompleted(category, topic) {
+  return parseInt(localStorage.getItem(storageKey(category, topic)) || 0);
+}
+
+// Save completed count to localStorage
+function setCompleted(category, topic, completed) {
+  localStorage.setItem(storageKey(category, topic), completed);
+}
+
+// Start quiz
 async function startQuiz(category) {
-  await loadQuestions(); // load all questions
+  await loadQuestions();
   currentCategory = category;
 
-  // Automatically pick the first topic in the select dropdown
   const topicSelect = document.getElementById("topicSelect");
   if (topicSelect && topicSelect.options.length > 0) {
     currentTopic = topicSelect.options[0].value;
-  } else {
-    currentTopic = ""; // fallback if no select
+    topicSelect.value = currentTopic;
   }
 
-  filterTopic(currentTopic); // immediately filter by first topic
+  filterTopic(currentTopic);
 }
 
-// Filter questions by topic within the current category
+// Filter questions
 function filterTopic(topic) {
   currentTopic = topic;
   filteredQuestions = questions.filter(
     q => q.category === currentCategory && q.topic === currentTopic
   );
-  current = 0;
-  updateProgressBar();
+  current = getCompleted(currentCategory, currentTopic);
   loadQuestion();
 }
 
-// Load the current question
+// Load question
 function loadQuestion() {
   if (filteredQuestions.length === 0) {
     document.getElementById("question").innerHTML = "No questions found.";
@@ -55,7 +67,7 @@ function loadQuestion() {
   updateProgressBar();
 }
 
-// Check answer colors
+// Check answer
 function checkAnswer(i) {
   const q = filteredQuestions[current];
   const buttons = document.querySelectorAll("#answers button");
@@ -64,19 +76,24 @@ function checkAnswer(i) {
     if (index === q.correct) btn.classList.add("correct");
     if (index === i && i !== q.correct) btn.classList.add("wrong");
   });
+
+  // Mark this question as completed
+  setCompleted(currentCategory, currentTopic, current + 1);
+  updateProgressBar();
 }
 
 // Next question
 function nextQuestion() {
   current++;
   if (current >= filteredQuestions.length) current = 0;
+  setCompleted(currentCategory, currentTopic, current);
   loadQuestion();
 }
 
-// Progress bar update
+// Update progress bar
 function updateProgressBar() {
   const total = filteredQuestions.length;
-  const completed = current;
+  const completed = Math.min(current, total);
   const bar = document.getElementById("progressBar");
   const text = document.getElementById("progressText");
   const percent = total === 0 ? 0 : (completed / total) * 100;
