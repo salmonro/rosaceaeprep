@@ -3,7 +3,7 @@
 
 /* Global Styles */
 body {
-  background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26); /* dark purple/pink gradient */
+  background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26);
   color: white;
   font-family: 'Rubik', Arial, sans-serif;
   margin: 0;
@@ -15,35 +15,82 @@ body {
 nav {
   background: #11162b;
   padding: 15px;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+/* glowing divider under navbar */
+nav::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 80%;
+  height: 2px;
+  transform: translateX(-50%);
+
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,143,179,0.4),
+    #ff8fb3,
+    rgba(255,143,179,0.4),
+    transparent
+  );
+
+  box-shadow: 0 0 10px rgba(255,143,179,0.7);
+  opacity: 0.9;
 }
 
 nav ul {
   list-style: none;
   display: flex;
   justify-content: center;
-  gap: 25px;
+  align-items: center;
+  gap: 0;
   margin: 0;
   padding: 0;
 }
 
+nav li {
+  display: flex;
+}
+
 nav a {
-  color: #d47a9a; /* muted pink */
+  position: relative;
+  padding: 0 18px;
+  color: #d47a9a;
   text-decoration: none;
   font-weight: bold;
   font-family: 'Rubik', Arial, sans-serif;
+
+  border-right: 1px solid rgba(255,255,255,0.75);
+}
+
+nav li:last-child a {
+  border-right: none;
 }
 
 nav a:hover {
-  color: #c75c85; /* slightly darker hover */
+  color: #ff8fb3;
 }
 
-nav li {
-  padding: 0 15px;
-  border-right: 1px solid rgba(255,255,255,0.3); /* thin white divider */
+/* glowing hover underline */
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+  background: #ff8fb3;
+  box-shadow: 0 0 6px #ff8fb3;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
 }
 
-nav li:last-child {
-  border-right: none; /* removes line after last item */
+nav a:hover::after {
+  width: 70%;
 }
 
 /* Hero / Header Sections */
@@ -54,8 +101,11 @@ nav li:last-child {
 
 .hero h1 {
   font-size: 70px;
-  color: #d47a9a; /* muted pink */
+  color: #d47a9a;
   font-weight: 700;
+
+  opacity: 0;
+  animation: titleGlow 1.5s ease forwards;
 }
 
 .hero p {
@@ -67,9 +117,28 @@ nav li:last-child {
   line-height: 1.6;
 }
 
+/* homepage title glow animation */
+@keyframes titleGlow {
+
+  0% {
+    opacity: 0;
+    text-shadow: none;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    text-shadow:
+      0 0 10px rgba(255,143,179,0.6),
+      0 0 20px rgba(255,143,179,0.4);
+    transform: translateY(0);
+  }
+
+}
+
 /* Buttons */
 button {
-  background: #d47a9a; /* muted pink */
+  background: #d47a9a;
   border: none;
   padding: 10px 18px;
   color: white;
@@ -81,7 +150,7 @@ button {
 }
 
 button:hover {
-  background: #c75c85; /* slightly darker hover */
+  background: #c75c85;
 }
 
 /* Quiz Answers */
@@ -121,7 +190,7 @@ p {
   line-height: 1.6;
 }
 
-/* iFrames (Discord server, etc.) */
+/* iFrames (Discord server etc.) */
 iframe {
   border: none;
   border-radius: 12px;
@@ -130,9 +199,14 @@ iframe {
 
 /* Responsive */
 @media screen and (max-width: 768px) {
+
   nav ul {
     flex-direction: column;
     gap: 15px;
+  }
+
+  nav a {
+    border-right: none;
   }
 
   .hero h1 {
@@ -151,4 +225,5 @@ iframe {
     width: 90%;
     height: 400px;
   }
+
 }
