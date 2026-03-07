@@ -128,7 +128,6 @@
       margin-top: 6px;
     }
 
-    /* Responsive */
     @media screen and (max-width: 768px) {
       nav ul {
         flex-direction: column;
@@ -190,7 +189,8 @@
   <script src="questions.js"></script>
   <script src="quiz.js"></script>
   <script>
-    startQuiz("AP Bio");
+    const initialCategory = document.getElementById('topicSelect').value;
+    startQuiz("AP Bio", initialCategory);
   </script>
 
 </body>
