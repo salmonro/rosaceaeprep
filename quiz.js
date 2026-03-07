@@ -1,103 +1,109 @@
 let filteredQuestions = [];
 let current = 0;
 let currentCategory = "";
-let answeredQuestions = {}; // tracks answered questions per category/topic
+let currentTopic = "";
 
+/**
+ * Start quiz with a category (e.g., "USABO" or "AP Bio")
+ */
 async function startQuiz(category) {
-  await loadQuestions();
+    await loadQuestions(); // ensure questions are loaded
+    currentCategory = category;
 
-  currentCategory = category;
-
-  // initialize answeredQuestions if not already
-  if (!answeredQuestions[currentCategory]) answeredQuestions[currentCategory] = new Set();
-
-  filteredQuestions = questions.filter(q => q.category === category);
-  current = 0;
-
-  loadQuestion();
-  updateProgress();
+    // If topic is empty, show all questions in category
+    currentTopic = "";
+    filteredQuestions = questions.filter(q => q.category === category);
+    current = 0;
+    loadQuestion();
 }
 
-function filterTopic(topic) {
-  filteredQuestions = questions.filter(
-    q => q.category === currentCategory && q.topic === topic
-  );
+/**
+ * Filter questions by topic
+ */
+async function filterTopic(topic) {
+    await loadQuestions(); // make sure questions are loaded
 
-  current = 0;
+    currentTopic = topic;
+    filteredQuestions = questions.filter(
+        q => q.category === currentCategory && q.topic === topic
+    );
 
-  // initialize answeredQuestions for this topic/unit
-  const key = `${currentCategory} - ${topic}`;
-  if (!answeredQuestions[key]) answeredQuestions[key] = new Set();
-
-  loadQuestion();
-  updateProgress();
+    current = 0;
+    loadQuestion();
 }
 
+/**
+ * Load the current question and update answers + progress
+ */
 function loadQuestion() {
-  if (filteredQuestions.length === 0) {
-    document.getElementById("question").innerHTML = "No questions found.";
-    document.getElementById("answers").innerHTML = "";
-    updateProgress();
-    return;
-  }
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
 
-  const q = filteredQuestions[current];
+    if (filteredQuestions.length === 0) {
+        questionEl.innerHTML = "No questions found.";
+        answersEl.innerHTML = "";
+        updateProgress(0, 0, currentTopic || currentCategory);
+        return;
+    }
 
-  document.getElementById("question").innerHTML = q.question;
+    const q = filteredQuestions[current];
+    questionEl.innerHTML = q.question;
 
-  const answers = document.getElementById("answers");
-  answers.innerHTML = "";
+    // Clear previous answers
+    answersEl.innerHTML = "";
 
-  q.answers.forEach((a, i) => {
-    const btn = document.createElement("button");
-    btn.innerText = a;
-    btn.onclick = () => checkAnswer(i);
-    answers.appendChild(btn);
-  });
+    q.answers.forEach((a, i) => {
+        const btn = document.createElement("button");
+        btn.className = "answer";
+        btn.innerText = a;
+        btn.onclick = () => checkAnswer(i);
+        answersEl.appendChild(btn);
+    });
 
-  updateProgress();
+    // Update progress bar
+    updateProgress(current, filteredQuestions.length, currentTopic || currentCategory);
 }
 
+/**
+ * Check the selected answer
+ */
 function checkAnswer(i) {
-  const q = filteredQuestions[current];
-  const buttons = document.querySelectorAll("#answers button");
+    const q = filteredQuestions[current];
+    const buttons = document.querySelectorAll("#answers button");
 
-  buttons.forEach((btn, index) => {
-    if (index === q.correct) btn.style.background = "green";
-    if (index === i && i !== q.correct) btn.style.background = "red";
-  });
-
-  // mark question as answered
-  const key = q.topic ? `${currentCategory} - ${q.topic}` : currentCategory;
-  answeredQuestions[key].add(current);
-  updateProgress();
+    buttons.forEach((btn, index) => {
+        if (index === q.correct) {
+            btn.classList.add("correct");
+        } else if (index === i && i !== q.correct) {
+            btn.classList.add("wrong");
+        }
+    });
 }
 
+/**
+ * Go to next question
+ */
 function nextQuestion() {
-  current++;
-  if (current >= filteredQuestions.length) current = 0;
-  loadQuestion();
+    if (filteredQuestions.length === 0) return;
+
+    current++;
+    if (current >= filteredQuestions.length) current = 0;
+    loadQuestion();
 }
 
-// ----------------- Progress Bar -----------------
-function updateProgress() {
-  const progressContainer = document.getElementById("progressContainer");
-  if (!progressContainer) return;
+/**
+ * Update the progress bar
+ */
+function updateProgress(completed, total, category) {
+    const bar = document.getElementById("progressBar");
+    const text = document.getElementById("progressText");
 
-  const key = filteredQuestions[current]?.topic
-    ? `${currentCategory} - ${filteredQuestions[current].topic}`
-    : currentCategory;
-
-  const answered = answeredQuestions[key] ? answeredQuestions[key].size : 0;
-  const total = filteredQuestions.length;
-
-  // create progress bar HTML
-  const barWidth = total ? (answered / total) * 100 : 0;
-
-  progressContainer.innerHTML = `
-    <div style="width: 80%; background: rgba(255,255,255,0.2); height: 18px; border-radius: 10px; margin: 0 auto;">
-      <div style="width: ${barWidth}%; background: white; height: 100%; border-radius: 10px; transition: width 0.3s;"></div>
-    </div>
-    <div id="progressText">${answered}/${total} questions of ${key} completed</div>
-  `;
+    const percent = total === 0 ? 0 : ((completed + 1) / total) * 100; // +1 for human-friendly
+    if (bar) bar.style.width = percent + "%";
+    if (text) text.innerText = `${completed + 1}/${total} questions of ${category} completed`;
 }
+
+// Expose functions globally
+window.startQuiz = startQuiz;
+window.filterTopic = filterTopic;
+window.nextQuestion = nextQuestion;
