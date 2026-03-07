@@ -10,25 +10,14 @@
       color: white;
       font-family: 'Rubik', Arial, sans-serif;
       text-align: center;
-      padding-top: 150px;
-    }
-
-    h1 {
-      font-size: 70px;
-      color: #d47a9a;
-      margin-bottom: 20px;
-    }
-
-    p {
-      font-size: 22px;
-      opacity: 0.8;
-      line-height: 1.6;
-      max-width: 800px;
-      margin: 0 auto;
+      padding-top: 120px;
+      margin: 0;
     }
 
     nav {
-      margin-top: 50px;
+      margin-bottom: 50px;
+      z-index: 1;
+      position: relative;
     }
 
     nav ul {
@@ -36,26 +25,114 @@
       padding: 0;
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 30px;
+      flex-wrap: wrap;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      padding-bottom: 10px;
+    }
+
+    nav li {
+      position: relative;
+      padding: 0 10px;
+    }
+
+    nav li::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 143, 179, 0.6);
+      border-radius: 1px;
+      opacity: 0.6;
     }
 
     nav a {
       color: #d47a9a;
       font-size: 20px;
       text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
     }
 
     nav a:hover {
       color: #c75c85;
     }
 
-    a.discord-link {
+    h1 {
+      font-size: 70px;
       color: #d47a9a;
-      text-decoration: underline;
+      margin-bottom: 40px;
     }
 
-    a.discord-link:hover {
-      color: #c75c85;
+    .guides-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 100px;
+    }
+
+    .guide-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 30px 25px;
+      width: 280px;
+      text-align: center;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .guide-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 20px rgba(255, 143, 179, 0.3);
+    }
+
+    .guide-card h2 {
+      color: #ff8fb3;
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+
+    .guide-card p {
+      color: #ccc;
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .guide-card a {
+      display: inline-block;
+      text-decoration: none;
+      background: #d47a9a;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .guide-card a:hover {
+      background: #c75c85;
+    }
+
+    @media screen and (max-width: 768px) {
+      h1 {
+        font-size: 50px;
+      }
+
+      .guides-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 15px;
+      }
     }
   </style>
 </head>
@@ -76,21 +153,19 @@
 
   <h1>Study Guides</h1>
 
-  <p>
+  <div class="guides-container">
+    <div class="guide-card">
+      <h2>Rosaceae's Guide to USABO</h2>
+      <p>Semi-comprehensive USABO guide written by Rosaceae. Use as a supplement to "Campbell Biology!"</p>
+      <a href="https://1drv.ms/w/c/9A99DCDB1A93CB05/AUlM0ybYxX5CptWrNsH8WP8?e=lhYofH" target="_blank">View Guide</a>
+    </div>
 
-    Rosaceae's Guide to USABO:<br>
-    <a href="https://1drv.ms/w/c/9A99DCDB1A93CB05/AUlM0ybYxX5CptWrNsH8WP8?e=lhYofH" target="_blank" class="discord-link">
-      View the Guide
-    </a>
-
-    <br><br>
-
-    AP Bio Unit Outlines:<br>
-    <a href="https://docs.google.com/document/d/1eXD1sy2DPwPPGZMf7lB-5PFva-3tcv90N2zp3jirqz4/edit?usp=sharing" target="_blank" class="discord-link">
-      View the Outlines
-    </a>
-
-  </p>
+    <div class="guide-card">
+      <h2>AP Bio Unit Outlines</h2>
+      <p>Unit-by-unit outlines for quick AP Bio review.</p>
+      <a href="https://docs.google.com/document/d/1eXD1sy2DPwPPGZMf7lB-5PFva-3tcv90N2zp3jirqz4/edit?usp=sharing" target="_blank">View Outlines</a>
+    </div>
+  </div>
 
 </body>
 
