@@ -2,16 +2,15 @@
 <html>
 
 <head>
-  <title>AP Biology Practice</title>
+  <title>USABO Practice</title>
   <link rel="stylesheet" href="style.css">
   <style>
-
-    /* Page-specific styling */
     body {
-      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26); /* dark gradient */
+      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26);
       color: white;
       font-family: 'Rubik', Arial, sans-serif;
       text-align: center;
+      margin: 0;
       padding-top: 50px;
     }
 
@@ -29,20 +28,26 @@
     }
 
     nav a {
-      color: #d47a9a; /* muted pink */
+      color: #d47a9a;
       font-size: 20px;
       text-decoration: none;
       font-weight: bold;
     }
 
     nav a:hover {
-      color: #c75c85; /* darker hover */
+      color: #c75c85;
     }
 
     h1 {
-      font-size: 70px;
-      color: #d47a9a; /* muted pink */
-      margin-bottom: 20px;
+      font-size: 60px;
+      color: #d47a9a;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      color: #ccc;
+      margin-bottom: 30px;
     }
 
     select {
@@ -58,7 +63,7 @@
     }
 
     button {
-      background: #d47a9a; /* muted pink */
+      background: #d47a9a;
       border: none;
       padding: 10px 18px;
       color: white;
@@ -71,7 +76,7 @@
     }
 
     button:hover {
-      background: #c75c85; /* darker hover */
+      background: #c75c85;
     }
 
     #answers {
@@ -99,13 +104,13 @@
       background: #e74c3c !important;
     }
 
-    h2 {
-      font-family: 'Rubik', Arial, sans-serif;
-      color: #ccc;
-      margin-top: 30px;
+    /* Progress bar text */
+    #progressText {
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 5px;
     }
 
-    /* Responsive */
     @media screen and (max-width: 768px) {
       nav ul {
         flex-direction: column;
@@ -116,18 +121,16 @@
         font-size: 50px;
       }
 
-      select {
-        width: 80%;
-      }
-
-      button, .answer {
+      select,
+      button,
+      .answer {
         width: 80%;
       }
     }
   </style>
 </head>
 
-<body data-page="apbio">
+<body data-page="usabo">
 
   <nav>
     <ul>
@@ -141,18 +144,23 @@
     </ul>
   </nav>
 
-  <h1>AP Biology Practice</h1>
+  <div class="hero">
+    <h1>USABO Practice</h1>
+    <p class="subtitle">Practice USABO-style questions by topic and track your progress.</p>
 
-  <select onchange="filterTopic(this.value)">
-    <option value="Unit 1: Chemistry of Life">Unit 1: Chemistry of Life</option>
-    <option value="Unit 2: Cell Structure">Unit 2: Cell Structure</option>
-    <option value="Unit 3: Cellular Energetics">Unit 3: Cellular Energetics</option>
-    <option value="Unit 4: Cell Communication">Unit 4: Cell Communication</option>
-    <option value="Unit 5: Heredity">Unit 5: Heredity</option>
-    <option value="Unit 6: Gene Expression">Unit 6: Gene Expression</option>
-    <option value="Unit 7: Evolution">Unit 7: Evolution</option>
-    <option value="Unit 8: Ecology">Unit 8: Ecology</option>
-  </select>
+    <select onchange="filterTopic(this.value)">
+      <option value="Cell Biology & Biochemistry">Cell Biology & Biochemistry</option>
+      <option value="Anatomy & Physiology">Anatomy & Physiology</option>
+      <option value="Genetics">Genetics</option>
+      <option value="Plant Biology">Plant Biology</option>
+      <option value="Ethology & Ecology">Ethology & Ecology</option>
+      <option value="Biosystematics">Biosystematics</option>
+    </select>
+
+  </div>
+
+  <!-- Progress bar -->
+  <div id="progressContainer"></div>
 
   <h2 id="question"></h2>
 
@@ -163,7 +171,7 @@
   <script src="questions.js"></script>
   <script src="quiz.js"></script>
   <script>
-    startQuiz("AP Bio")
+    startQuiz("USABO");
   </script>
 
 </body>
