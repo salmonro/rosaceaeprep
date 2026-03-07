@@ -159,8 +159,8 @@
       color: #c75c85;
     }
 
-    /* DNA 3D Canvas */
-    #dna3dContainer {
+    /* DNA 2D Canvas */
+    #dnaCanvas {
       position: fixed;
       top: 0;
       left: 0;
@@ -214,7 +214,7 @@
 
 <body>
 
-  <div id="dna3dContainer"></div>
+  <canvas id="dnaCanvas"></canvas>
 
   <div class="hero">
     <h1>Rosaceae Prep</h1>
@@ -258,68 +258,51 @@
     <div class="progress-text" id="progressText">0/0 questions of [Category] completed</div>
   </div>
 
-  <!-- Three.js for Spinning DNA -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
+  <!-- 2D DNA Helix Animation -->
   <script>
-    // 3D DNA spinning animation (no mouse movement)
-    const container = document.getElementById("dna3dContainer");
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
+    const canvas = document.getElementById("dnaCanvas");
+    const ctx = canvas.getContext("2d");
 
-    const light = new THREE.PointLight(0xffffff, 1);
-    light.position.set(50, 50, 50);
-    scene.add(light);
-
-    const dnaGroup = new THREE.Group();
-    scene.add(dnaGroup);
-
-    const helixRadius = 2;
-    const helixTurns = 12;
-    const helixHeight = 24;
-    const sphereGeom = new THREE.SphereGeometry(0.15, 16, 16);
-    const materialA = new THREE.MeshStandardMaterial({ color: 0xff8fb3 });
-    const materialT = new THREE.MeshStandardMaterial({ color: 0x8fd1ff });
-
-    for (let i = 0; i < helixTurns * 10; i++) {
-      const angle = i * 0.6;
-      const y = (i / 10) - helixHeight / 2;
-
-      const x1 = Math.cos(angle) * helixRadius;
-      const z1 = Math.sin(angle) * helixRadius;
-      const sphere1 = new THREE.Mesh(sphereGeom, i % 2 === 0 ? materialA : materialT);
-      sphere1.position.set(x1, y, z1);
-      dnaGroup.add(sphere1);
-
-      const x2 = Math.cos(angle + Math.PI) * helixRadius;
-      const z2 = Math.sin(angle + Math.PI) * helixRadius;
-      const sphere2 = new THREE.Mesh(sphereGeom, i % 2 === 0 ? materialT : materialA);
-      sphere2.position.set(x2, y, z2);
-      dnaGroup.add(sphere2);
-
-      const points = [new THREE.Vector3(x1, y, z1), new THREE.Vector3(x2, y, z2)];
-      const lineGeom = new THREE.BufferGeometry().setFromPoints(points);
-      const line = new THREE.Line(lineGeom, new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.1, transparent: true }));
-      dnaGroup.add(line);
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
 
-    camera.position.z = 15;
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
-    function animate() {
-      requestAnimationFrame(animate);
-      dnaGroup.rotation.y += 0.01; // continuous spinning
-      renderer.render(scene, camera);
+    let t = 0;
+
+    function drawDNA() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const centerX = canvas.width / 2;
+
+      for (let y = 0; y < canvas.height; y += 12) {
+        const x1 = centerX + Math.sin((y + t) / 60) * 120;
+        const x2 = centerX + Math.sin((y + t) / 60 + Math.PI) * 120;
+
+        ctx.beginPath();
+        ctx.arc(x1, y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.25)";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x2, y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.25)";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y);
+        ctx.lineTo(x2, y);
+        ctx.strokeStyle = "rgba(255,255,255,0.08)";
+        ctx.stroke();
+      }
+
+      t += 2;
+      requestAnimationFrame(drawDNA);
     }
 
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    drawDNA();
 
     // Example progress bar update function
     function updateProgress(completed, total, category) {
