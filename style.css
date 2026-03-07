@@ -47,28 +47,27 @@ nav ul {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0;
   margin: 0;
   padding: 0;
 }
 
 nav li {
   display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-right: 1px solid rgba(255,255,255,0.75); /* white divider */
+}
+
+nav li:last-child {
+  border-right: none;
 }
 
 nav a {
   position: relative;
-  padding: 0 18px;
   color: #d47a9a;
   text-decoration: none;
   font-weight: bold;
   font-family: 'Rubik', Arial, sans-serif;
-
-  border-right: 1px solid rgba(255,255,255,0.75);
-}
-
-nav li:last-child a {
-  border-right: none;
 }
 
 nav a:hover {
