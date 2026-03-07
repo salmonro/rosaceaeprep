@@ -4,6 +4,7 @@
 <head>
   <title>Rosaceae Prep</title>
   <link rel="stylesheet" href="style.css">
+
   <style>
 
     body {
@@ -11,24 +12,109 @@
       color: white;
       font-family: 'Rubik', Arial, sans-serif;
       text-align: center;
-      padding-top: 150px;
+      margin: 0;
+      overflow-x: hidden;
     }
 
     h1 {
       font-size: 70px;
       color: #d47a9a;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
-    p {
+    .subtitle {
       font-size: 22px;
       color: #ccc;
-      margin-bottom: 60px;
-      line-height: 1.6;
+      margin-bottom: 40px;
     }
 
+    .hero {
+      padding-top: 140px;
+      margin-bottom: 80px;
+    }
+
+    /* Buttons */
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .main-btn {
+      background: #ff8fb3;
+      color: white;
+      padding: 14px 30px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(255,143,179,0.6);
+      transition: all 0.3s;
+    }
+
+    .main-btn:hover {
+      background: #ff6fa3;
+      box-shadow: 0 0 25px rgba(255,143,179,1);
+    }
+
+    .secondary-btn {
+      border: 2px solid #ff8fb3;
+      color: #ff8fb3;
+      padding: 12px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .secondary-btn:hover {
+      background: #ff8fb3;
+      color: white;
+    }
+
+    /* Feature cards */
+
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 100px;
+    }
+
+    .card {
+      width: 260px;
+      padding: 30px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 20px rgba(255,143,179,0.3);
+    }
+
+    .card h2 {
+      color: #ff8fb3;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #bbb;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    /* Navbar */
+
     nav {
-      margin-top: 40px;
+      margin-top: 60px;
+      margin-bottom: 60px;
     }
 
     nav ul {
@@ -52,10 +138,26 @@
       color: #c75c85;
     }
 
+    /* DNA canvas */
+
+    #dnaCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
     @media screen and (max-width: 768px) {
 
       h1 {
-        font-size: 50px;
+        font-size: 48px;
+      }
+
+      .features {
+        flex-direction: column;
+        align-items: center;
       }
 
       nav ul {
@@ -66,12 +168,43 @@
     }
 
   </style>
+
 </head>
 
 <body>
 
-  <h1>Rosaceae Prep</h1>
-  <p>The ultimate biology resource.</p>
+  <canvas id="dnaCanvas"></canvas>
+
+  <div class="hero">
+
+    <h1>Rosaceae Prep</h1>
+    <p class="subtitle">The ultimate biology resource for USABO and AP Biology.</p>
+
+    <div class="buttons">
+      <a href="usabo.html" class="main-btn">Start USABO Practice</a>
+      <a href="apbio.html" class="secondary-btn">AP Bio Resources</a>
+    </div>
+
+  </div>
+
+  <div class="features">
+
+    <div class="card">
+      <h2>USABO Questions</h2>
+      <p>Practice competition-level biology questions designed for USABO preparation.</p>
+    </div>
+
+    <div class="card">
+      <h2>AP Bio Review</h2>
+      <p>Review key concepts and test yourself with organized AP Biology questions.</p>
+    </div>
+
+    <div class="card">
+      <h2>Study Guides</h2>
+      <p>Clear and concise explanations covering major biology topics.</p>
+    </div>
+
+  </div>
 
   <nav>
     <ul>
@@ -83,6 +216,57 @@
       <li><a href="about.html">About</a></li>
     </ul>
   </nav>
+
+  <script>
+
+    const canvas = document.getElementById("dnaCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    let t = 0;
+
+    function drawDNA() {
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+
+      for (let y = 0; y < canvas.height; y += 12) {
+
+        let x1 = centerX + Math.sin((y + t) / 60) * 120;
+        let x2 = centerX + Math.sin((y + t) / 60 + Math.PI) * 120;
+
+        ctx.beginPath();
+        ctx.arc(x1, y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.25)";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x2, y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.25)";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y);
+        ctx.lineTo(x2, y);
+        ctx.strokeStyle = "rgba(255,255,255,0.08)";
+        ctx.stroke();
+      }
+
+      t += 2;
+      requestAnimationFrame(drawDNA);
+    }
+
+    drawDNA();
+
+  </script>
 
 </body>
 
