@@ -1,63 +1,66 @@
 let filteredQuestions = [];
 let current = 0;
 let currentCategory = "";
-let currentTopic = "";
+let progressKey = "quizProgress";
 
-// Start quiz by category (e.g., "USABO" or "AP Bio")
+// Load saved progress from localStorage or initialize
+let progress = JSON.parse(localStorage.getItem(progressKey)) || {};
+
+// Start the quiz for a given category/unit
 async function startQuiz(category) {
   await loadQuestions();
 
   currentCategory = category;
-  currentTopic = ""; // default: all topics/units
+
   filteredQuestions = questions.filter(q => q.category === category);
+
   current = 0;
 
-  createProgressBar();
+  if (!progress[currentCategory]) {
+    progress[currentCategory] = 0; // initialize if first time
+  }
+
   loadQuestion();
   updateProgressBar();
 }
 
-// Filter questions by topic/unit
+// Filter by topic (e.g., for USABO units or AP Bio units)
 function filterTopic(topic) {
-  currentTopic = topic;
   filteredQuestions = questions.filter(
     q => q.category === currentCategory && q.topic === topic
   );
-  current = 0;
 
+  current = 0;
+  if (!progress[topic]) {
+    progress[topic] = 0;
+  }
+  updateProgressBar(topic);
   loadQuestion();
-  updateProgressBar();
 }
 
-// Load current question
+// Load a question
 function loadQuestion() {
-  const questionEl = document.getElementById("question");
-  const answersEl = document.getElementById("answers");
-
   if (filteredQuestions.length === 0) {
-    questionEl.innerHTML = "No questions found.";
-    answersEl.innerHTML = "";
-    updateProgressBar();
+    document.getElementById("question").innerHTML = "No questions found.";
+    document.getElementById("answers").innerHTML = "";
     return;
   }
 
   const q = filteredQuestions[current];
+  document.getElementById("question").innerHTML = q.question;
 
-  questionEl.innerHTML = q.question;
-  answersEl.innerHTML = "";
+  const answers = document.getElementById("answers");
+  answers.innerHTML = "";
 
   q.answers.forEach((a, i) => {
     const btn = document.createElement("button");
     btn.innerText = a;
-    btn.classList.add("answer");
     btn.onclick = () => checkAnswer(i);
-    answersEl.appendChild(btn);
+    answers.appendChild(btn);
   });
-
-  updateProgressBar();
 }
 
-// Check answer
+// Check the selected answer
 function checkAnswer(i) {
   const q = filteredQuestions[current];
   const buttons = document.querySelectorAll("#answers button");
@@ -67,74 +70,46 @@ function checkAnswer(i) {
     if (index === i && i !== q.correct) btn.style.background = "red";
   });
 
-  // Mark this question as completed
-  q.completed = true;
-
-  updateProgressBar();
+  // Update progress
+  const key = q.topic || currentCategory;
+  progress[key] = (progress[key] || 0) + 1;
+  localStorage.setItem(progressKey, JSON.stringify(progress));
+  updateProgressBar(key);
 }
 
-// Next question
+// Move to the next question
 function nextQuestion() {
   current++;
   if (current >= filteredQuestions.length) current = 0;
   loadQuestion();
 }
 
-// ----------------------
-// Progress Bar Functions
-// ----------------------
-function createProgressBar() {
-  if (document.getElementById("progressContainer")) return;
+// Update the progress bar
+function updateProgressBar(key = currentCategory) {
+  const container = document.getElementById("progressContainer");
+  if (!container) return;
 
-  const container = document.createElement("div");
-  container.id = "progressContainer";
-  container.style.width = "80%";
-  container.style.maxWidth = "600px";
-  container.style.height = "24px";
-  container.style.background = "rgba(255,255,255,0.15)";
-  container.style.borderRadius = "12px";
-  container.style.margin = "20px auto";
-  container.style.overflow = "hidden";
+  const total = questions.filter(q => (q.topic || q.category) === key).length;
+  const done = progress[key] || 0;
 
-  const bar = document.createElement("div");
-  bar.id = "progressBar";
-  bar.style.height = "100%";
-  bar.style.width = "0%";
-  bar.style.background = "rgba(255,255,255,0.8)";
-  bar.style.transition = "width 0.3s ease";
+  const percent = Math.min((done / total) * 100, 100);
 
-  const text = document.createElement("div");
-  text.id = "progressText";
-  text.style.position = "absolute";
-  text.style.width = "100%";
-  text.style.textAlign = "center";
-  text.style.color = "white";
-  text.style.fontWeight = "bold";
-  text.style.marginTop = "-24px"; // place text inside bar
-
-  container.appendChild(bar);
-  container.appendChild(text);
-
-  document.body.insertBefore(container, document.getElementById("question"));
-}
-
-// Update progress bar
-function updateProgressBar() {
-  const progressContainer = document.getElementById("progressContainer");
-  const bar = document.getElementById("progressBar");
-  const text = document.getElementById("progressText");
-
-  if (!progressContainer || !bar || !text) return;
-
-  let relevantQuestions = questions.filter(q =>
-    q.category === currentCategory &&
-    (currentTopic === "" || q.topic === currentTopic)
-  );
-
-  let completedCount = relevantQuestions.filter(q => q.completed).length;
-  let totalCount = relevantQuestions.length;
-
-  const percent = totalCount === 0 ? 0 : (completedCount / totalCount) * 100;
-  bar.style.width = percent + "%";
-  text.innerText = `${completedCount}/${totalCount} questions of ${currentTopic || currentCategory} completed`;
+  container.innerHTML = `
+    <div style="
+      width: 80%;
+      height: 12px;
+      margin: 10px auto;
+      background: rgba(255,255,255,0.15);
+      border-radius: 6px;
+      overflow: hidden;
+    ">
+      <div style="
+        width: ${percent}%;
+        height: 100%;
+        background: white;
+        transition: width 0.3s;
+      "></div>
+    </div>
+    <div id="progressText">${done}/${total} questions of "${key}" completed</div>
+  `;
 }
