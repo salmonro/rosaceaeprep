@@ -1,9 +1,12 @@
 let filteredQuestions = [];
 let current = 0;
+let currentCategory = "";
 
 async function startQuiz(category){
 
 await loadQuestions();
+
+currentCategory = category;
 
 filteredQuestions = questions.filter(q => q.category === category);
 
@@ -16,7 +19,7 @@ loadQuestion();
 function filterTopic(topic){
 
 filteredQuestions = questions.filter(
-q => q.category === "USABO" && q.topic === topic
+q => q.category === currentCategory && q.topic === topic
 );
 
 current = 0;
@@ -29,6 +32,7 @@ function loadQuestion(){
 
 if(filteredQuestions.length === 0){
 document.getElementById("question").innerHTML = "No questions found.";
+document.getElementById("answers").innerHTML = "";
 return;
 }
 
