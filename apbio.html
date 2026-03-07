@@ -164,7 +164,7 @@
 
   <h1>AP Biology Practice</h1>
 
-  <select onchange="filterTopic(this.value)" id="topicSelect">
+  <select id="topicSelect">
     <option value="Unit 1: Chemistry of Life">Unit 1: Chemistry of Life</option>
     <option value="Unit 2: Cell Structure">Unit 2: Cell Structure</option>
     <option value="Unit 3: Cellular Energetics">Unit 3: Cellular Energetics</option>
@@ -178,7 +178,6 @@
   <h2 id="question"></h2>
   <div id="answers"></div>
 
-  <!-- Progress Bar -->
   <div class="progress-container">
     <div class="progress-bar" id="progressBar"></div>
     <div class="progress-text" id="progressText">0/0 questions of [Category] completed</div>
@@ -189,8 +188,11 @@
   <script src="questions.js"></script>
   <script src="quiz.js"></script>
   <script>
-    const initialCategory = document.getElementById('topicSelect').value;
-    startQuiz("AP Bio", initialCategory);
+    document.addEventListener("DOMContentLoaded", () => {
+      const topicSelect = document.getElementById("topicSelect");
+      startQuiz("AP Bio", topicSelect.value);
+      topicSelect.addEventListener("change", (e) => filterTopic(e.target.value));
+    });
   </script>
 
 </body>
