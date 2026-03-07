@@ -258,22 +258,22 @@
     <div class="progress-text" id="progressText">0/0 questions of [Category] completed</div>
   </div>
 
-  <!-- Three.js for 3D DNA -->
+  <!-- Three.js for Spinning DNA -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
   <script>
-    // 3D DNA setup
-    let container = document.getElementById("dna3dContainer");
-    let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    let renderer = new THREE.WebGLRenderer({ alpha: true });
+    // 3D DNA spinning animation (no mouse movement)
+    const container = document.getElementById("dna3dContainer");
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
 
-    let light = new THREE.PointLight(0xffffff, 1);
+    const light = new THREE.PointLight(0xffffff, 1);
     light.position.set(50, 50, 50);
     scene.add(light);
 
-    let dnaGroup = new THREE.Group();
+    const dnaGroup = new THREE.Group();
     scene.add(dnaGroup);
 
     const helixRadius = 2;
@@ -284,43 +284,32 @@
     const materialT = new THREE.MeshStandardMaterial({ color: 0x8fd1ff });
 
     for (let i = 0; i < helixTurns * 10; i++) {
-      let angle = i * 0.6;
-      let y = (i / 10) - helixHeight / 2;
+      const angle = i * 0.6;
+      const y = (i / 10) - helixHeight / 2;
 
-      let x1 = Math.cos(angle) * helixRadius;
-      let z1 = Math.sin(angle) * helixRadius;
-      let sphere1 = new THREE.Mesh(sphereGeom, i % 2 === 0 ? materialA : materialT);
+      const x1 = Math.cos(angle) * helixRadius;
+      const z1 = Math.sin(angle) * helixRadius;
+      const sphere1 = new THREE.Mesh(sphereGeom, i % 2 === 0 ? materialA : materialT);
       sphere1.position.set(x1, y, z1);
       dnaGroup.add(sphere1);
 
-      let x2 = Math.cos(angle + Math.PI) * helixRadius;
-      let z2 = Math.sin(angle + Math.PI) * helixRadius;
-      let sphere2 = new THREE.Mesh(sphereGeom, i % 2 === 0 ? materialT : materialA);
+      const x2 = Math.cos(angle + Math.PI) * helixRadius;
+      const z2 = Math.sin(angle + Math.PI) * helixRadius;
+      const sphere2 = new THREE.Mesh(sphereGeom, i % 2 === 0 ? materialT : materialA);
       sphere2.position.set(x2, y, z2);
       dnaGroup.add(sphere2);
 
-      let points = [];
-      points.push(new THREE.Vector3(x1, y, z1));
-      points.push(new THREE.Vector3(x2, y, z2));
-      let lineGeom = new THREE.BufferGeometry().setFromPoints(points);
-      let line = new THREE.Line(lineGeom, new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.1, transparent: true }));
+      const points = [new THREE.Vector3(x1, y, z1), new THREE.Vector3(x2, y, z2)];
+      const lineGeom = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.Line(lineGeom, new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.1, transparent: true }));
       dnaGroup.add(line);
     }
 
     camera.position.z = 15;
 
-    let mouseX = 0,
-      mouseY = 0;
-    document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX - window.innerWidth / 2) / 200;
-      mouseY = (e.clientY - window.innerHeight / 2) / 200;
-    });
-
     function animate() {
       requestAnimationFrame(animate);
-      dnaGroup.rotation.y += 0.01;
-      dnaGroup.rotation.x = mouseY;
-      dnaGroup.rotation.z = mouseX;
+      dnaGroup.rotation.y += 0.01; // continuous spinning
       renderer.render(scene, camera);
     }
 
@@ -332,7 +321,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Example progress bar update (hook into quiz progress later)
+    // Example progress bar update function
     function updateProgress(completed, total, category) {
       const bar = document.getElementById("progressBar");
       const text = document.getElementById("progressText");
