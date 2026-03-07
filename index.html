@@ -6,7 +6,6 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-
     body {
       background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26);
       color: white;
@@ -31,10 +30,11 @@
     .hero {
       padding-top: 140px;
       margin-bottom: 80px;
+      position: relative;
+      z-index: 1;
     }
 
     /* Buttons */
-
     .buttons {
       display: flex;
       justify-content: center;
@@ -50,13 +50,13 @@
       border-radius: 8px;
       text-decoration: none;
       font-weight: bold;
-      box-shadow: 0 0 15px rgba(255,143,179,0.6);
+      box-shadow: 0 0 15px rgba(255, 143, 179, 0.6);
       transition: all 0.3s;
     }
 
     .main-btn:hover {
       background: #ff6fa3;
-      box-shadow: 0 0 25px rgba(255,143,179,1);
+      box-shadow: 0 0 25px rgba(255, 143, 179, 1);
     }
 
     .secondary-btn {
@@ -75,28 +75,29 @@
     }
 
     /* Feature cards */
-
     .features {
       display: flex;
       justify-content: center;
       gap: 40px;
       flex-wrap: wrap;
       margin-bottom: 100px;
+      position: relative;
+      z-index: 1;
     }
 
     .card {
       width: 260px;
       padding: 30px;
-      background: rgba(255,255,255,0.04);
+      background: rgba(255, 255, 255, 0.04);
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(10px);
       transition: all 0.3s;
     }
 
     .card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 0 20px rgba(255,143,179,0.3);
+      box-shadow: 0 0 20px rgba(255, 143, 179, 0.3);
     }
 
     .card h2 {
@@ -111,10 +112,11 @@
     }
 
     /* Navbar */
-
     nav {
       margin-top: 60px;
       margin-bottom: 60px;
+      position: relative;
+      z-index: 1;
     }
 
     nav ul {
@@ -124,6 +126,25 @@
       justify-content: center;
       gap: 30px;
       flex-wrap: wrap;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      padding-bottom: 10px;
+    }
+
+    nav li {
+      position: relative;
+      padding: 0 10px;
+    }
+
+    nav li::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 143, 179, 0.6);
+      border-radius: 1px;
+      opacity: 0.6;
     }
 
     nav a {
@@ -138,19 +159,42 @@
       color: #c75c85;
     }
 
-    /* DNA canvas */
-
-    #dnaCanvas {
+    /* DNA 3D Canvas */
+    #dna3dContainer {
       position: fixed;
       top: 0;
       left: 0;
+      width: 100%;
+      height: 100%;
       z-index: -1;
-      opacity: 0.35;
       pointer-events: none;
+      opacity: 0.35;
+    }
+
+    /* Question Progress Placeholder */
+    .progress-container {
+      width: 300px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 10px;
+      background: white;
+      transition: width 0.3s;
+    }
+
+    .progress-text {
+      color: #ccc;
+      font-size: 14px;
+      margin-top: 6px;
     }
 
     @media screen and (max-width: 768px) {
-
       h1 {
         font-size: 48px;
       }
@@ -164,19 +208,15 @@
         flex-direction: column;
         gap: 15px;
       }
-
     }
-
   </style>
-
 </head>
 
 <body>
 
-  <canvas id="dnaCanvas"></canvas>
+  <div id="dna3dContainer"></div>
 
   <div class="hero">
-
     <h1>Rosaceae Prep</h1>
     <p class="subtitle">The ultimate biology resource for USABO and AP Biology.</p>
 
@@ -184,26 +224,21 @@
       <a href="usabo.html" class="main-btn">Start USABO Practice</a>
       <a href="apbio.html" class="secondary-btn">AP Bio Resources</a>
     </div>
-
   </div>
 
   <div class="features">
-
     <div class="card">
       <h2>USABO Questions</h2>
       <p>Practice USABO-style questions covering all tested topics.</p>
     </div>
-
     <div class="card">
       <h2>AP Bio Review</h2>
       <p>Review key concepts and test yourself with questions by unit.</p>
     </div>
-
     <div class="card">
       <h2>Study Guides</h2>
       <p>Clear and concise explanations for both the USABO and the AP Biology test.</p>
     </div>
-
   </div>
 
   <nav>
@@ -217,55 +252,94 @@
     </ul>
   </nav>
 
+  <!-- Question Progress Example -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="progress-text" id="progressText">0/0 questions of [Category] completed</div>
+  </div>
+
+  <!-- Three.js for 3D DNA -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
   <script>
+    // 3D DNA setup
+    let container = document.getElementById("dna3dContainer");
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    let renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
 
-    const canvas = document.getElementById("dnaCanvas");
-    const ctx = canvas.getContext("2d");
+    let light = new THREE.PointLight(0xffffff, 1);
+    light.position.set(50, 50, 50);
+    scene.add(light);
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    let dnaGroup = new THREE.Group();
+    scene.add(dnaGroup);
+
+    const helixRadius = 2;
+    const helixTurns = 12;
+    const helixHeight = 24;
+    const sphereGeom = new THREE.SphereGeometry(0.15, 16, 16);
+    const materialA = new THREE.MeshStandardMaterial({ color: 0xff8fb3 });
+    const materialT = new THREE.MeshStandardMaterial({ color: 0x8fd1ff });
+
+    for (let i = 0; i < helixTurns * 10; i++) {
+      let angle = i * 0.6;
+      let y = (i / 10) - helixHeight / 2;
+
+      let x1 = Math.cos(angle) * helixRadius;
+      let z1 = Math.sin(angle) * helixRadius;
+      let sphere1 = new THREE.Mesh(sphereGeom, i % 2 === 0 ? materialA : materialT);
+      sphere1.position.set(x1, y, z1);
+      dnaGroup.add(sphere1);
+
+      let x2 = Math.cos(angle + Math.PI) * helixRadius;
+      let z2 = Math.sin(angle + Math.PI) * helixRadius;
+      let sphere2 = new THREE.Mesh(sphereGeom, i % 2 === 0 ? materialT : materialA);
+      sphere2.position.set(x2, y, z2);
+      dnaGroup.add(sphere2);
+
+      let points = [];
+      points.push(new THREE.Vector3(x1, y, z1));
+      points.push(new THREE.Vector3(x2, y, z2));
+      let lineGeom = new THREE.BufferGeometry().setFromPoints(points);
+      let line = new THREE.Line(lineGeom, new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.1, transparent: true }));
+      dnaGroup.add(line);
     }
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    camera.position.z = 15;
 
-    let t = 0;
+    let mouseX = 0,
+      mouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX - window.innerWidth / 2) / 200;
+      mouseY = (e.clientY - window.innerHeight / 2) / 200;
+    });
 
-    function drawDNA() {
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const centerX = canvas.width / 2;
-
-      for (let y = 0; y < canvas.height; y += 12) {
-
-        let x1 = centerX + Math.sin((y + t) / 60) * 120;
-        let x2 = centerX + Math.sin((y + t) / 60 + Math.PI) * 120;
-
-        ctx.beginPath();
-        ctx.arc(x1, y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255,255,255,0.25)";
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(x2, y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255,255,255,0.25)";
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.moveTo(x1, y);
-        ctx.lineTo(x2, y);
-        ctx.strokeStyle = "rgba(255,255,255,0.08)";
-        ctx.stroke();
-      }
-
-      t += 2;
-      requestAnimationFrame(drawDNA);
+    function animate() {
+      requestAnimationFrame(animate);
+      dnaGroup.rotation.y += 0.01;
+      dnaGroup.rotation.x = mouseY;
+      dnaGroup.rotation.z = mouseX;
+      renderer.render(scene, camera);
     }
 
-    drawDNA();
+    animate();
 
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Example progress bar update (hook into quiz progress later)
+    function updateProgress(completed, total, category) {
+      const bar = document.getElementById("progressBar");
+      const text = document.getElementById("progressText");
+      const percent = total === 0 ? 0 : (completed / total) * 100;
+      bar.style.width = percent + "%";
+      text.innerText = `${completed}/${total} questions of ${category} completed`;
+    }
   </script>
 
 </body>
