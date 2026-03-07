@@ -5,9 +5,9 @@
   <title>Rosaceae Prep</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Homepage Styling */
+
     body {
-      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26); /* dark gradient */
+      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26);
       color: white;
       font-family: 'Rubik', Arial, sans-serif;
       text-align: center;
@@ -16,24 +16,32 @@
 
     h1 {
       font-size: 70px;
-      color: #d47a9a; /* muted pink */
+      color: #d47a9a;
       margin-bottom: 20px;
     }
 
     p {
       font-size: 22px;
       color: #ccc;
-      margin-bottom: 50px;
+      margin-bottom: 60px;
       line-height: 1.6;
     }
 
     nav {
-      margin-top: 50px;
+      margin-top: 40px;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
     }
 
     nav a {
-      margin: 20px;
-      color: #d47a9a; /* muted pink */
+      color: #d47a9a;
       font-size: 20px;
       text-decoration: none;
       font-weight: bold;
@@ -41,20 +49,22 @@
     }
 
     nav a:hover {
-      color: #c75c85; /* slightly darker hover */
+      color: #c75c85;
     }
 
-    /* Responsive */
     @media screen and (max-width: 768px) {
+
       h1 {
         font-size: 50px;
       }
 
-      nav a {
-        display: block;
-        margin: 10px 0;
+      nav ul {
+        flex-direction: column;
+        gap: 15px;
       }
+
     }
+
   </style>
 </head>
 
@@ -64,12 +74,14 @@
   <p>The ultimate biology resource.</p>
 
   <nav>
-    <a href="usabo.html">USABO</a>
-    <a href="apbio.html">AP Bio</a>
-    <li><a href="studyguides.html">Study Guides</a></li>
-    <a href="discord.html">Join the Discord</a>
-    <a href="logs.html">Logs</a>
-    <a href="about.html">About</a>
+    <ul>
+      <li><a href="usabo.html">USABO</a></li>
+      <li><a href="apbio.html">AP Bio</a></li>
+      <li><a href="studyguides.html">Study Guides</a></li>
+      <li><a href="discord.html">Join the Discord</a></li>
+      <li><a href="logs.html">Logs</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
   </nav>
 
 </body>
