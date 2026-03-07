@@ -164,7 +164,7 @@
 
   <h1>USABO Practice</h1>
 
-  <select onchange="filterTopic(this.value)" id="topicSelect">
+  <select id="topicSelect">
     <option value="Cell Biology & Biochemistry">Cell Biology & Biochemistry</option>
     <option value="Anatomy & Physiology">Anatomy & Physiology</option>
     <option value="Genetics">Genetics</option>
@@ -176,7 +176,6 @@
   <h2 id="question"></h2>
   <div id="answers"></div>
 
-  <!-- Progress Bar -->
   <div class="progress-container">
     <div class="progress-bar" id="progressBar"></div>
     <div class="progress-text" id="progressText">0/0 questions of [Category] completed</div>
@@ -187,9 +186,11 @@
   <script src="questions.js"></script>
   <script src="quiz.js"></script>
   <script>
-    // Start quiz with the first category in the select
-    const initialCategory = document.getElementById('topicSelect').value;
-    startQuiz("USABO", initialCategory);
+    document.addEventListener("DOMContentLoaded", () => {
+      const topicSelect = document.getElementById("topicSelect");
+      startQuiz("USABO", topicSelect.value);
+      topicSelect.addEventListener("change", (e) => filterTopic(e.target.value));
+    });
   </script>
 
 </body>
