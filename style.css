@@ -37,6 +37,15 @@ nav a:hover {
   color: #c75c85; /* slightly darker hover */
 }
 
+nav li {
+  padding: 0 15px;
+  border-right: 1px solid rgba(255,255,255,0.3); /* thin white divider */
+}
+
+nav li:last-child {
+  border-right: none; /* removes line after last item */
+}
+
 /* Hero / Header Sections */
 .hero {
   text-align: center;
