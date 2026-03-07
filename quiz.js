@@ -1,102 +1,102 @@
+// quiz.js
 let filteredQuestions = [];
 let current = 0;
-let currentCategory = "";
-let currentTopic = "";
+let currentTopic = ""; // stores the current category/topic
 
-// Key for localStorage
-function storageKey(category, topic) {
-  return `progress_${category}_${topic}`;
-}
-
-// Get completed count from localStorage
-function getCompleted(category, topic) {
-  return parseInt(localStorage.getItem(storageKey(category, topic)) || 0);
-}
-
-// Save completed count to localStorage
-function setCompleted(category, topic, completed) {
-  localStorage.setItem(storageKey(category, topic), completed);
-}
-
-// Start quiz
 async function startQuiz(category) {
-  await loadQuestions();
-  currentCategory = category;
+  await loadQuestions(); // load all questions
+  currentTopic = category;
 
-  const topicSelect = document.getElementById("topicSelect");
-  if (topicSelect && topicSelect.options.length > 0) {
-    currentTopic = topicSelect.options[0].value;
-    topicSelect.value = currentTopic;
-  }
+  // filter only the questions for the initial category
+  filteredQuestions = questions.filter(q => q.category === currentTopic);
 
-  filterTopic(currentTopic);
+  current = 0;
+  loadQuestion();
+  updateProgressBar();
 }
 
-// Filter questions
+// switch topics within the same category (like a select dropdown)
 function filterTopic(topic) {
   currentTopic = topic;
-  filteredQuestions = questions.filter(
-    q => q.category === currentCategory && q.topic === currentTopic
-  );
-  current = getCompleted(currentCategory, currentTopic);
+  filteredQuestions = questions.filter(q => q.category === currentTopic);
+  current = 0;
   loadQuestion();
+  updateProgressBar();
 }
 
-// Load question
 function loadQuestion() {
+  const questionEl = document.getElementById("question");
+  const answersEl = document.getElementById("answers");
+
   if (filteredQuestions.length === 0) {
-    document.getElementById("question").innerHTML = "No questions found.";
-    document.getElementById("answers").innerHTML = "";
+    questionEl.innerHTML = "No questions found.";
+    answersEl.innerHTML = "";
     updateProgressBar();
     return;
   }
 
   const q = filteredQuestions[current];
-  document.getElementById("question").innerHTML = q.question;
+  questionEl.innerHTML = q.question;
 
-  const answers = document.getElementById("answers");
-  answers.innerHTML = "";
-
+  answersEl.innerHTML = "";
   q.answers.forEach((a, i) => {
     const btn = document.createElement("button");
     btn.innerText = a;
+    btn.classList.add("answer");
     btn.onclick = () => checkAnswer(i);
-    answers.appendChild(btn);
+    answersEl.appendChild(btn);
   });
 
   updateProgressBar();
 }
 
-// Check answer
 function checkAnswer(i) {
   const q = filteredQuestions[current];
   const buttons = document.querySelectorAll("#answers button");
 
   buttons.forEach((btn, index) => {
-    if (index === q.correct) btn.classList.add("correct");
-    if (index === i && i !== q.correct) btn.classList.add("wrong");
+    if (index === q.correct) {
+      btn.classList.add("correct");
+    }
+    if (index === i && i !== q.correct) {
+      btn.classList.add("wrong");
+    }
   });
-
-  // Mark this question as completed
-  setCompleted(currentCategory, currentTopic, current + 1);
-  updateProgressBar();
 }
 
-// Next question
 function nextQuestion() {
   current++;
-  if (current >= filteredQuestions.length) current = 0;
-  setCompleted(currentCategory, currentTopic, current);
+  if (current >= filteredQuestions.length) {
+    current = 0; // loop back to start
+  }
   loadQuestion();
 }
 
-// Update progress bar
+// Smooth progress bar animation
+let progressAnimation = null;
 function updateProgressBar() {
   const total = filteredQuestions.length;
   const completed = Math.min(current, total);
   const bar = document.getElementById("progressBar");
   const text = document.getElementById("progressText");
-  const percent = total === 0 ? 0 : (completed / total) * 100;
-  bar.style.width = percent + "%";
+  const targetPercent = total === 0 ? 0 : (completed / total) * 100;
+
   text.innerText = `${completed}/${total} questions of ${currentTopic} completed`;
+
+  if (progressAnimation) cancelAnimationFrame(progressAnimation);
+
+  const startPercent = parseFloat(bar.style.width) || 0;
+
+  function animateProgress() {
+    let currentPercent = parseFloat(bar.style.width) || 0;
+    if (Math.abs(currentPercent - targetPercent) < 0.5) {
+      bar.style.width = targetPercent + "%";
+      return;
+    }
+    currentPercent += (targetPercent - currentPercent) / 5; // smoothing factor
+    bar.style.width = currentPercent + "%";
+    progressAnimation = requestAnimationFrame(animateProgress);
+  }
+
+  progressAnimation = requestAnimationFrame(animateProgress);
 }
