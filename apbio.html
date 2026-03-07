@@ -5,26 +5,13 @@
   <title>AP Biology Practice</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Page-specific styling */
     body {
       background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26);
       color: white;
       font-family: 'Rubik', Arial, sans-serif;
       text-align: center;
-      padding-top: 100px;
       margin: 0;
-    }
-
-    h1 {
-      font-size: 60px;
-      color: #d47a9a;
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      font-size: 20px;
-      color: #ccc;
-      margin-bottom: 30px;
+      padding-top: 80px;
     }
 
     nav {
@@ -35,7 +22,7 @@
       list-style: none;
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 25px;
       padding: 0;
       margin: 0;
       flex-wrap: wrap;
@@ -50,35 +37,46 @@
     }
 
     nav a:hover {
-      color: #c75c85;
+      color: #ff8fb3;
+    }
+
+    h1 {
+      font-size: 60px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      color: #ccc;
+      margin-bottom: 30px;
     }
 
     select {
       padding: 10px 14px;
       font-size: 16px;
-      margin-bottom: 25px;
-      border-radius: 8px;
+      border-radius: 6px;
       border: none;
       background: #151a2e;
       color: white;
       cursor: pointer;
+      margin-bottom: 20px;
     }
 
     button {
       background: #ff8fb3;
       border: none;
-      padding: 12px 24px;
+      padding: 12px 22px;
       color: white;
       border-radius: 8px;
       cursor: pointer;
-      font-family: 'Rubik', Arial, sans-serif;
-      font-weight: 500;
-      transition: all 0.3s;
+      font-weight: bold;
       margin-top: 20px;
+      transition: all 0.3s;
     }
 
     button:hover {
       background: #ff6fa3;
+      box-shadow: 0 0 20px rgba(255,143,179,0.5);
     }
 
     #answers {
@@ -87,13 +85,12 @@
 
     .answer {
       display: block;
-      margin: 12px auto;
-      padding: 12px;
+      margin: 10px auto;
+      padding: 10px;
       background: #151a2e;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      max-width: 450px;
-      font-family: 'Rubik', Arial, sans-serif;
+      max-width: 400px;
       font-weight: 400;
       transition: background 0.3s;
     }
@@ -107,33 +104,72 @@
     }
 
     #progressContainer {
-      margin: 20px auto;
       width: 80%;
+      max-width: 600px;
+      margin: 20px auto 40px auto;
+      font-size: 16px;
     }
 
     #progressText {
-      margin-top: 5px;
-      font-size: 16px;
+      margin-top: 6px;
       color: #ccc;
+      font-weight: 500;
+    }
+
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 60px;
+      margin-bottom: 100px;
+    }
+
+    .card {
+      width: 260px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 20px rgba(255, 143, 179, 0.3);
+    }
+
+    .card h2 {
+      color: #ff8fb3;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #bbb;
+      font-size: 16px;
+      line-height: 1.5;
     }
 
     @media screen and (max-width: 768px) {
-      h1 {
-        font-size: 48px;
+      nav ul {
+        flex-direction: column;
+        gap: 15px;
       }
 
+      h1 {
+        font-size: 50px;
+      }
+
+      button,
+      .answer,
       select {
         width: 80%;
       }
 
-      button,
-      .answer {
-        width: 80%;
-      }
-
-      nav ul {
+      .features {
         flex-direction: column;
-        gap: 15px;
+        align-items: center;
       }
     }
   </style>
@@ -154,7 +190,7 @@
   </nav>
 
   <h1>AP Biology Practice</h1>
-  <p class="subtitle">Select a unit and track your progress!</p>
+  <p class="subtitle">Select a unit and test your knowledge.</p>
 
   <select onchange="filterTopic(this.value)">
     <option value="Unit 1: Chemistry of Life">Unit 1: Chemistry of Life</option>
@@ -170,10 +206,24 @@
   <div id="progressContainer"></div>
 
   <h2 id="question"></h2>
-
   <div id="answers"></div>
 
   <button onclick="nextQuestion()">Next Question</button>
+
+  <div class="features">
+    <div class="card">
+      <h2>AP Bio Questions</h2>
+      <p>Practice questions by unit with progress tracking.</p>
+    </div>
+    <div class="card">
+      <h2>Study Guides</h2>
+      <p>Clear guides to reinforce your AP Biology knowledge.</p>
+    </div>
+    <div class="card">
+      <h2>Leaderboard</h2>
+      <p>Track your performance and compare with previous attempts.</p>
+    </div>
+  </div>
 
   <script src="questions.js"></script>
   <script src="quiz.js"></script>
