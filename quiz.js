@@ -2,7 +2,7 @@ let filteredQuestions = [];
 let current = 0;
 let currentCategory = "";
 let currentTopic = "";
-let skipCompleted = true; // filter out completed questions
+let filterUncompleted = false; // toggle: show only uncompleted
 const STORAGE_KEY = "completedQuestions";
 
 function getCompletedQuestions() {
@@ -43,10 +43,10 @@ async function startQuiz(category, topic = null) {
   currentCategory = category;
   currentTopic = topic || document.getElementById("topicSelect").value;
 
-  const completed = getCompletedQuestions();
   filteredQuestions = questions.filter(q => q.category === currentCategory && q.topic === currentTopic);
 
-  if (skipCompleted) {
+  if (filterUncompleted) {
+    const completed = getCompletedQuestions();
     filteredQuestions = filteredQuestions.filter(q => !(completed[currentCategory]?.[currentTopic]?.includes(q.question)));
   }
 
@@ -63,19 +63,27 @@ function filterTopic(topic) {
   startQuiz(currentCategory, currentTopic);
 }
 
+function toggleFilterUncompleted() {
+  filterUncompleted = !filterUncompleted;
+  startQuiz(currentCategory, currentTopic);
+}
+
 function loadQuestion() {
   const questionEl = document.getElementById("question");
   const answersEl = document.getElementById("answers");
 
   if (filteredQuestions.length === 0) {
-    questionEl.innerText = "No questions left in this category/topic.";
+    questionEl.innerText = "No questions found for this category/topic.";
     answersEl.innerHTML = "";
     updateProgressBar();
     return;
   }
 
   const q = filteredQuestions[current];
-  questionEl.innerText = q.question;
+  const completed = getCompletedQuestions();
+  const done = completed[currentCategory]?.[currentTopic]?.includes(q.question);
+
+  questionEl.innerText = q.question + (done ? " ✅" : "");
 
   answersEl.innerHTML = "";
   q.answers.forEach((a, i) => {
@@ -98,7 +106,6 @@ function checkAnswer(i) {
     if (index === i && i !== q.correct) btn.classList.add("wrong");
   });
 
-  // Save question as completed if answered
   saveCompletedQuestion(currentCategory, currentTopic, q.question);
   updateTopicDropdown();
 }
@@ -107,9 +114,7 @@ function nextQuestion() {
   if (filteredQuestions.length === 0) return;
 
   current++;
-  if (current >= filteredQuestions.length) {
-    current = 0;
-  }
+  if (current >= filteredQuestions.length) current = 0;
 
   loadQuestion();
 }
@@ -133,3 +138,4 @@ window.startQuiz = startQuiz;
 window.filterTopic = filterTopic;
 window.nextQuestion = nextQuestion;
 window.skipQuestion = skipQuestion;
+window.toggleFilterUncompleted = toggleFilterUncompleted;
