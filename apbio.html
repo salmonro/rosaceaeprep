@@ -74,6 +74,15 @@
       background: #c75c85;
     }
 
+    button.skip {
+      background: #888;
+      margin-left: 10px;
+    }
+
+    button.skip:hover {
+      background: #666;
+    }
+
     #answers {
       margin-top: 20px;
     }
@@ -105,7 +114,6 @@
       margin-top: 30px;
     }
 
-    /* Progress Bar */
     .progress-container {
       width: 300px;
       margin: 20px auto;
@@ -184,13 +192,14 @@
   </div>
 
   <button onclick="nextQuestion()">Next Question</button>
+  <button class="skip" onclick="nextQuestion(true)">Skip Question</button>
 
   <script src="questions.js"></script>
   <script src="quiz.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const topicSelect = document.getElementById("topicSelect");
-      startQuiz("AP Bio", topicSelect.value);
+      startQuiz("AP Bio", topicSelect.value, true);
       topicSelect.addEventListener("change", (e) => filterTopic(e.target.value));
     });
   </script>
