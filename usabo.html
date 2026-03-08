@@ -67,20 +67,11 @@
       font-family: 'Rubik', Arial, sans-serif;
       font-weight: 500;
       transition: background 0.3s;
-      margin-top: 20px;
+      margin: 10px 5px;
     }
 
     button:hover {
       background: #c75c85;
-    }
-
-    button.skip {
-      background: #888;
-      margin-left: 10px;
-    }
-
-    button.skip:hover {
-      background: #666;
     }
 
     #answers {
@@ -114,6 +105,7 @@
       margin-top: 30px;
     }
 
+    /* Progress Bar */
     .progress-container {
       width: 300px;
       margin: 20px auto;
@@ -181,6 +173,11 @@
     <option value="Biosystematics">Biosystematics</option>
   </select>
 
+  <div>
+    <button onclick="toggleFilterUncompleted()">Show Only Uncompleted Questions</button>
+    <button onclick="skipQuestion()">Skip Question</button>
+  </div>
+
   <h2 id="question"></h2>
   <div id="answers"></div>
 
@@ -190,14 +187,13 @@
   </div>
 
   <button onclick="nextQuestion()">Next Question</button>
-  <button class="skip" onclick="nextQuestion(true)">Skip Question</button>
 
   <script src="questions.js"></script>
   <script src="quiz.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const topicSelect = document.getElementById("topicSelect");
-      startQuiz("USABO", topicSelect.value, true); // true = skip completed questions
+      startQuiz("USABO", topicSelect.value);
       topicSelect.addEventListener("change", (e) => filterTopic(e.target.value));
     });
   </script>
