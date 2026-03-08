@@ -2,41 +2,65 @@ let filteredQuestions = [];
 let current = 0;
 let currentCategory = "";
 let currentTopic = "";
-let skipCompleted = true; // Option to skip completed questions
+let skipCompleted = true; // filter out completed questions
+const STORAGE_KEY = "completedQuestions";
 
-async function startQuiz(category, topic = null, skipDone = true) {
+function getCompletedQuestions() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+}
+
+function saveCompletedQuestion(category, topic, question) {
+  const completed = getCompletedQuestions();
+  if (!completed[category]) completed[category] = {};
+  if (!completed[category][topic]) completed[category][topic] = [];
+  if (!completed[category][topic].includes(question)) {
+    completed[category][topic].push(question);
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
+}
+
+function updateTopicDropdown() {
+  const topicSelect = document.getElementById("topicSelect");
+  const completed = getCompletedQuestions();
+  Array.from(topicSelect.options).forEach(option => {
+    const cat = currentCategory;
+    const topic = option.value;
+    const done = completed[cat]?.[topic]?.length || 0;
+    option.text = done ? `${topic} ✔️` : topic;
+  });
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+async function startQuiz(category, topic = null) {
   await loadQuestions();
 
   currentCategory = category;
   currentTopic = topic || document.getElementById("topicSelect").value;
-  skipCompleted = skipDone;
 
-  // Filter questions for category & topic
+  const completed = getCompletedQuestions();
   filteredQuestions = questions.filter(q => q.category === currentCategory && q.topic === currentTopic);
 
-  // Filter out completed questions if desired
-  const user = localStorage.getItem("currentUser") || "guest";
-  const progress = JSON.parse(localStorage.getItem("progress_" + user) || "{}");
   if (skipCompleted) {
-    filteredQuestions = filteredQuestions.filter((q, index) => {
-      return !(progress[currentCategory]?.[currentTopic]?.[index]);
-    });
+    filteredQuestions = filteredQuestions.filter(q => !(completed[currentCategory]?.[currentTopic]?.includes(q.question)));
   }
 
-  // Shuffle questions
   shuffleArray(filteredQuestions);
 
   current = 0;
+  updateTopicDropdown();
   loadQuestion();
   updateProgressBar();
 }
 
-// Simple shuffle function
-function shuffleArray(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
+function filterTopic(topic) {
+  currentTopic = topic;
+  startQuiz(currentCategory, currentTopic);
 }
 
 function loadQuestion() {
@@ -44,7 +68,7 @@ function loadQuestion() {
   const answersEl = document.getElementById("answers");
 
   if (filteredQuestions.length === 0) {
-    questionEl.innerText = "No questions available (all completed or none in this topic).";
+    questionEl.innerText = "No questions left in this category/topic.";
     answersEl.innerHTML = "";
     updateProgressBar();
     return;
@@ -74,30 +98,24 @@ function checkAnswer(i) {
     if (index === i && i !== q.correct) btn.classList.add("wrong");
   });
 
-  // Save progress
-  const user = localStorage.getItem("currentUser") || "guest";
-  const progress = JSON.parse(localStorage.getItem("progress_" + user) || "{}");
-  if (!progress[currentCategory]) progress[currentCategory] = {};
-  if (!progress[currentCategory][currentTopic]) progress[currentCategory][currentTopic] = {};
-  progress[currentCategory][currentTopic][current] = true;
-  localStorage.setItem("progress_" + user, JSON.stringify(progress));
-
-  // Update checkmarks on topic list
-  if (typeof markCompletedTopics === "function") markCompletedTopics();
+  // Save question as completed if answered
+  saveCompletedQuestion(currentCategory, currentTopic, q.question);
+  updateTopicDropdown();
 }
 
-function nextQuestion(skip = false) {
+function nextQuestion() {
   if (filteredQuestions.length === 0) return;
 
-  if (skip) {
-    current++;
-    if (current >= filteredQuestions.length) current = 0;
-  } else {
-    current++;
-    if (current >= filteredQuestions.length) current = 0;
+  current++;
+  if (current >= filteredQuestions.length) {
+    current = 0;
   }
 
   loadQuestion();
+}
+
+function skipQuestion() {
+  nextQuestion();
 }
 
 function updateProgressBar() {
@@ -105,13 +123,13 @@ function updateProgressBar() {
   const text = document.getElementById("progressText");
 
   const total = filteredQuestions.length;
-  const completed = filteredQuestions.filter((q, index) => {
-    const user = localStorage.getItem("currentUser") || "guest";
-    const progress = JSON.parse(localStorage.getItem("progress_" + user) || "{}");
-    return progress[currentCategory]?.[currentTopic]?.[index];
-  }).length;
-
-  const percent = total === 0 ? 0 : (completed / total) * 100;
+  const completed = current;
+  const percent = total === 0 ? 100 : (completed / total) * 100;
   bar.style.width = percent + "%";
   text.innerText = `${completed}/${total} questions of ${currentTopic} completed`;
 }
+
+window.startQuiz = startQuiz;
+window.filterTopic = filterTopic;
+window.nextQuestion = nextQuestion;
+window.skipQuestion = skipQuestion;
