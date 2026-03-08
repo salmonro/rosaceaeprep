@@ -16,10 +16,34 @@
     }
 
     h1 {
-      font-size: 70px;
-      color: #d47a9a;
-      margin-bottom: 10px;
-    }
+  font-size: 70px;
+  margin-bottom: 10px;
+
+  background: linear-gradient(90deg, #ffb6cf, #ff8fb3, #d47a9a, #ff8fb3, #ffb6cf);
+  background-size: 300% 300%;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: gradientShift 6s ease infinite;
+
+  text-shadow:
+    0 0 8px rgba(255, 143, 179, 0.6),
+    0 0 16px rgba(255, 143, 179, 0.4),
+    0 0 24px rgba(255, 143, 179, 0.25);
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 
     .subtitle {
       font-size: 22px;
