@@ -4,20 +4,28 @@
 <head>
   <title>Join the Discord</title>
   <link rel="stylesheet" href="style.css">
+
   <style>
+    /* Apple-style polished background */
     body {
-      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26);
-      color: white;
+      margin: 0;
       font-family: 'Rubik', Arial, sans-serif;
       text-align: center;
+      color: white;
+
+      background:
+        radial-gradient(circle at 20% 25%, #2a1a33 0%, transparent 40%),
+        radial-gradient(circle at 80% 75%, #1a2a4a 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, #1a0f2a 0%, transparent 40%),
+        linear-gradient(180deg, #111321 0%, #0b0d18 100%);
+
+      min-height: 100vh;
       padding-top: 120px;
-      margin: 0;
     }
 
+    /* Navbar */
     nav {
-      margin-bottom: 50px;
-      z-index: 1;
-      position: relative;
+      margin-bottom: 60px;
     }
 
     nav ul {
@@ -60,59 +68,63 @@
       color: #c75c85;
     }
 
+    /* Title */
     h1 {
       font-size: 70px;
-      background: linear-gradient(to right, #ffe3ef, #ff8fb3, #b8326a);
+      margin-bottom: 60px;
+
+      background: linear-gradient(to right, #f4b6cc, #e97aa3, #a6456c);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+
       text-shadow:
-        0 0 8px rgba(255,120,170,0.8),
-        0 0 18px rgba(255,120,170,0.6),
-        0 0 32px rgba(255,120,170,0.4);
-      margin-bottom: 40px;
+        0 0 6px rgba(255, 120, 170, 0.5),
+        0 0 14px rgba(255, 120, 170, 0.35),
+        0 0 24px rgba(255, 120, 170, 0.25);
     }
 
+    /* Discord card */
     .discord-card {
       max-width: 500px;
-      margin: 0 auto 100px auto;
-      background: rgba(255, 255, 255, 0.04);
+      margin: 0 auto 120px auto;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 50px 30px;
-      backdrop-filter: blur(10px);
+      padding: 40px 30px;
+      backdrop-filter: blur(14px);
       transition: all 0.3s;
     }
 
     .discord-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 0 25px rgba(255, 143, 179, 0.3);
+      transform: translateY(-8px);
+      box-shadow: 0 0 25px rgba(255, 143, 179, 0.35);
     }
 
     .discord-card p {
-      font-size: 20px;
       color: #ccc;
+      font-size: 18px;
       line-height: 1.6;
       margin-bottom: 30px;
     }
 
-    .discord-card a button {
-      padding: 14px 32px;
-      font-size: 18px;
-      border: none;
-      border-radius: 12px;
-      background: #d47a9a;
+    .discord-card a {
+      display: inline-block;
+      text-decoration: none;
+      background: #ff8fb3;
       color: white;
+      padding: 12px 28px;
+      border-radius: 8px;
       font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(255, 143, 179, 0.5);
+      box-shadow: 0 0 15px rgba(255, 143, 179, 0.6);
       transition: all 0.3s;
     }
 
-    .discord-card a button:hover {
-      background: #c75c85;
-      box-shadow: 0 0 25px rgba(255, 143, 179, 0.8);
+    .discord-card a:hover {
+      background: #ff6fa3;
+      box-shadow: 0 0 25px rgba(255, 143, 179, 1);
     }
 
+    /* Mobile */
     @media screen and (max-width: 768px) {
       h1 {
         font-size: 50px;
@@ -124,11 +136,11 @@
       }
 
       .discord-card {
-        padding: 40px 20px;
         width: 90%;
+        padding: 35px 20px;
       }
 
-      .discord-card a button {
+      .discord-card a {
         width: 80%;
       }
     }
@@ -153,9 +165,7 @@
 
   <div class="discord-card">
     <p>Join the server for regular updates, Q&A, and USABO/AP Bio discussion!</p>
-    <a href="https://discord.gg/gKQQjMTyRk" target="_blank">
-      <button>Join Server</button>
-    </a>
+    <a href="https://discord.gg/gKQQjMTyRk" target="_blank">Join Server</a>
   </div>
 
 </body>
