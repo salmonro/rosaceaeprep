@@ -10,15 +10,16 @@ async function loadQuestions() {
   const res = await fetch(url);
   const data = await res.json();
 
-  questions = data.map((row, idx) => ({
+  questions = data.map(row => ({
     category: row.Category,
     topic: row.Topic,
     question: row.Question,
     answers: [row.A, row.B, row.C, row.D],
     correct: ["A","B","C","D"].indexOf(row.Correct),
-    uniqueId: row.UniqueId || `${row.Category}_${row.Topic}_${idx}` // Use sheet's UniqueId if present, else fallback
+    uniqueId: `${row.Category}_${row.Topic}_${row.Question}` // unique identifier for tracking
   }));
 }
 
+// Expose to global
 window.loadQuestions = loadQuestions;
 window.questions = questions;
