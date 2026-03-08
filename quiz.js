@@ -4,8 +4,40 @@ let currentCategory = "";
 let currentTopic = "";
 let showOnlyUncompleted = false;
 
-// Load completed questions from localStorage
-let completedQuestions = JSON.parse(localStorage.getItem("completedQuestions") || "{}");
+function getStorageKey(category, topic) {
+  return `completed_${category}_${topic}`;
+}
+
+// Retrieve completed questions from localStorage
+function getCompleted(category, topic) {
+  const key = getStorageKey(category, topic);
+  const stored = localStorage.getItem(key);
+  return stored ? JSON.parse(stored) : [];
+}
+
+// Check if a question is completed
+function isCompleted(category, topic, id) {
+  const completed = getCompleted(category, topic);
+  return completed.includes(id);
+}
+
+// Mark a question as completed
+function markCompleted(category, topic, id) {
+  const completed = getCompleted(category, topic);
+  if (!completed.includes(id)) {
+    completed.push(id);
+    localStorage.setItem(getStorageKey(category, topic), JSON.stringify(completed));
+  }
+}
+
+// Shuffle questions
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 
 async function startQuiz(category, topic = null) {
   await loadQuestions();
@@ -13,51 +45,57 @@ async function startQuiz(category, topic = null) {
   currentCategory = category;
   currentTopic = topic || document.getElementById("topicSelect").value;
 
-  filterQuestions();
+  filteredQuestions = questions.filter(q => q.category === currentCategory && q.topic === currentTopic);
+
+  applyFilters();
 
   current = 0;
   loadQuestion();
   updateProgressBar();
 }
 
-function filterQuestions() {
-  filteredQuestions = questions
-    .filter(q => q.category === currentCategory && q.topic === currentTopic)
-    .map((q, index) => ({ ...q, originalIndex: index }));
-
-  // Apply "only uncompleted" filter
+function applyFilters() {
+  filteredQuestions = questions.filter(q => q.category === currentCategory && q.topic === currentTopic);
   if (showOnlyUncompleted) {
-    filteredQuestions = filteredQuestions.filter(q => !isCompleted(currentCategory, currentTopic, q.originalIndex));
+    filteredQuestions = filteredQuestions.filter(q => !isCompleted(currentCategory, currentTopic, q.uniqueId));
   }
-
-  // Randomize questions
-  filteredQuestions = shuffleArray(filteredQuestions);
+  filteredQuestions = shuffle(filteredQuestions);
 }
 
-function isCompleted(category, topic, index) {
-  return completedQuestions[`${category}_${topic}_${index}`] === true;
+function filterTopic(topic) {
+  currentTopic = topic;
+  applyFilters();
+  current = 0;
+  loadQuestion();
+  updateProgressBar();
 }
 
-function markCompleted(category, topic, index) {
-  completedQuestions[`${category}_${topic}_${index}`] = true;
-  localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
+function toggleFilter() {
+  showOnlyUncompleted = !showOnlyUncompleted;
+  applyFilters();
+  current = 0;
+  loadQuestion();
+  updateProgressBar();
 }
 
 function loadQuestion() {
   const questionEl = document.getElementById("question");
   const answersEl = document.getElementById("answers");
+  const skipBtn = document.getElementById("skipBtn");
 
   if (filteredQuestions.length === 0) {
-    questionEl.innerHTML = "No questions found for this category/topic.";
+    questionEl.innerText = "No questions found for this category/topic.";
     answersEl.innerHTML = "";
+    skipBtn.style.display = "none";
     updateProgressBar();
     return;
   }
 
   const q = filteredQuestions[current];
-  const completed = isCompleted(currentCategory, currentTopic, q.originalIndex);
+  questionEl.innerHTML = q.question;
 
-  questionEl.innerHTML = `${q.question} ${completed ? "✅" : ""}`;
+  // Show skip button only if completed
+  skipBtn.style.display = isCompleted(currentCategory, currentTopic, q.uniqueId) ? "inline-block" : "none";
 
   answersEl.innerHTML = "";
   q.answers.forEach((a, i) => {
@@ -80,12 +118,13 @@ function checkAnswer(i) {
     if (index === i && i !== q.correct) btn.classList.add("wrong");
   });
 
-  // Mark as completed if answered
-  markCompleted(currentCategory, currentTopic, q.originalIndex);
+  // Mark completed
+  markCompleted(currentCategory, currentTopic, q.uniqueId);
 
-  // Update checkmark
-  const questionEl = document.getElementById("question");
-  questionEl.innerHTML = `${q.question} ✅`;
+  // Show skip button after completion
+  document.getElementById("skipBtn").style.display = "inline-block";
+
+  updateProgressBar();
 }
 
 function nextQuestion() {
@@ -101,54 +140,20 @@ function skipQuestion() {
   nextQuestion();
 }
 
-function toggleFilterUncompleted() {
-  showOnlyUncompleted = document.getElementById("filterUncompleted").checked;
-  filterQuestions();
-  current = 0;
-  loadQuestion();
-  updateProgressBar();
-}
-
-function clearProgress() {
-  if (confirm("Are you sure you want to clear all completed question progress?")) {
-    completedQuestions = {};
-    localStorage.setItem("completedQuestions", JSON.stringify(completedQuestions));
-    loadQuestion();
-  }
-}
-
 function updateProgressBar() {
   const bar = document.getElementById("progressBar");
   const text = document.getElementById("progressText");
 
   const total = filteredQuestions.length;
-  const completed = filteredQuestions.filter(q => isCompleted(currentCategory, currentTopic, q.originalIndex)).length;
+  const completedCount = filteredQuestions.filter(q => isCompleted(currentCategory, currentTopic, q.uniqueId)).length;
 
-  const percent = total === 0 ? 0 : (completed / total) * 100;
+  const percent = total === 0 ? 0 : (completedCount / total) * 100;
   bar.style.width = percent + "%";
-  text.innerText = `${completed}/${total} questions of ${currentTopic} completed`;
+  text.innerText = `${completedCount}/${total} questions of ${currentTopic} completed`;
 }
 
-// Fisher-Yates shuffle
-function shuffleArray(array) {
-  const a = array.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-// Expose functions to global
 window.startQuiz = startQuiz;
-window.filterTopic = (topic) => {
-  currentTopic = topic;
-  filterQuestions();
-  current = 0;
-  loadQuestion();
-  updateProgressBar();
-};
+window.filterTopic = filterTopic;
 window.nextQuestion = nextQuestion;
 window.skipQuestion = skipQuestion;
-window.toggleFilterUncompleted = toggleFilterUncompleted;
-window.clearProgress = clearProgress;
+window.toggleFilter = toggleFilter;
