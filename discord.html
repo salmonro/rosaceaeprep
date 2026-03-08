@@ -5,74 +5,116 @@
   <title>Join the Discord</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Page-specific styling */
     body {
-      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26); /* dark gradient */
+      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26);
       color: white;
       font-family: 'Rubik', Arial, sans-serif;
       text-align: center;
-      padding-top: 50px;
+      margin: 0;
+      padding-top: 120px;
     }
 
     nav {
       margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
     }
 
     nav ul {
       list-style: none;
+      padding: 0;
       display: flex;
       justify-content: center;
-      gap: 20px;
-      padding: 0;
-      margin: 0;
+      gap: 30px;
+      flex-wrap: wrap;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      padding-bottom: 10px;
+    }
+
+    nav li {
+      position: relative;
+      padding: 0 10px;
+    }
+
+    nav li::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 143, 179, 0.6);
+      border-radius: 1px;
+      opacity: 0.6;
     }
 
     nav a {
-      color: #d47a9a; /* muted pink */
+      color: #d47a9a;
       font-size: 20px;
       text-decoration: none;
       font-weight: bold;
+      transition: color 0.3s;
     }
 
     nav a:hover {
-      color: #c75c85; /* slightly darker hover */
+      color: #c75c85;
     }
 
     h1 {
       font-size: 70px;
-      color: #d47a9a; /* muted pink */
-      margin-bottom: 20px;
+      margin-bottom: 40px;
+
+      background: linear-gradient(to right, #f4b6cc, #e97aa3, #a6456c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      text-shadow:
+        0 0 6px rgba(255,120,170,0.5),
+        0 0 14px rgba(255,120,170,0.35),
+        0 0 24px rgba(255,120,170,0.25);
     }
 
     p {
       font-size: 22px;
       color: #ccc;
-      margin-bottom: 30px;
       max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0 auto 40px auto;
       line-height: 1.6;
     }
 
-    a button {
+    .discord-card {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 30px 25px;
+      border-radius: 12px;
+      width: 320px;
+      margin: 0 auto 80px auto;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s;
+    }
+
+    .discord-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 20px rgba(255, 143, 179, 0.3);
+    }
+
+    .discord-card button {
       margin-top: 20px;
-      padding: 12px 30px;
+      padding: 14px 32px;
       font-size: 18px;
       border: none;
       border-radius: 8px;
-      background-color: #d47a9a; /* muted pink */
+      background: #d47a9a;
       color: white;
+      font-weight: bold;
       cursor: pointer;
-      font-family: 'Rubik', Arial, sans-serif;
-      font-weight: 500;
       transition: background 0.3s;
     }
 
-    a button:hover {
-      background-color: #c75c85; /* slightly darker hover */
+    .discord-card button:hover {
+      background: #c75c85;
     }
 
-    /* Responsive */
     @media screen and (max-width: 768px) {
       nav ul {
         flex-direction: column;
@@ -83,7 +125,7 @@
         font-size: 50px;
       }
 
-      a button {
+      .discord-card button {
         width: 80%;
       }
     }
@@ -105,11 +147,13 @@
   </nav>
 
   <h1>Join the Discord</h1>
-  <p>Click below to join our server for regular updates!</p>
 
-  <a href="https://discord.gg/gKQQjMTyRk" target="_blank">
-    <button>Join Server</button>
-  </a>
+  <div class="discord-card">
+    <p>Click below to join our server for regular updates and resources!</p>
+    <a href="https://discord.gg/gKQQjMTyRk" target="_blank">
+      <button>Join Server</button>
+    </a>
+  </div>
 
 </body>
 
