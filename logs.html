@@ -4,18 +4,28 @@
 <head>
   <title>Server Announcements</title>
   <link rel="stylesheet" href="style.css">
+
   <style>
-    /* Match site styling */
+    /* Apple-style polished background */
     body {
-      background: linear-gradient(135deg, #0b0f1a, #11162b, #1a0b26); /* dark gradient */
-      color: white;
+      margin: 0;
       font-family: 'Rubik', Arial, sans-serif;
       text-align: center;
-      padding-top: 50px;
+      color: white;
+
+      background:
+        radial-gradient(circle at 20% 25%, #2a1a33 0%, transparent 40%),
+        radial-gradient(circle at 80% 75%, #1a2a4a 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, #1a0f2a 0%, transparent 40%),
+        linear-gradient(180deg, #111321 0%, #0b0d18 100%);
+
+      min-height: 100vh;
+      padding-top: 120px;
     }
 
+    /* Navbar */
     nav {
-      margin-bottom: 50px;
+      margin-bottom: 60px;
     }
 
     nav ul {
@@ -23,12 +33,31 @@
       padding: 0;
       display: flex;
       justify-content: center;
-      gap: 20px;
-      margin: 0;
+      gap: 30px;
+      flex-wrap: wrap;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      padding-bottom: 10px;
+    }
+
+    nav li {
+      position: relative;
+      padding: 0 10px;
+    }
+
+    nav li::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 143, 179, 0.6);
+      border-radius: 1px;
+      opacity: 0.6;
     }
 
     nav a {
-      color: #d47a9a; /* muted pink */
+      color: #d47a9a;
       font-size: 20px;
       text-decoration: none;
       font-weight: bold;
@@ -36,34 +65,65 @@
     }
 
     nav a:hover {
-      color: #c75c85; /* slightly darker hover */
+      color: #c75c85;
     }
 
+    /* Title */
     h1 {
       font-size: 70px;
-      color: #d47a9a; /* muted pink */
-      margin-bottom: 30px;
+      margin-bottom: 60px;
+
+      background: linear-gradient(to right, #f4b6cc, #e97aa3, #a6456c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      text-shadow:
+        0 0 6px rgba(255,120,170,0.5),
+        0 0 14px rgba(255,120,170,0.35),
+        0 0 24px rgba(255,120,170,0.25);
     }
 
-    iframe {
-      border: none;
+    /* Glassy Discord card */
+    .discord-card {
+      max-width: 600px;
+      margin: 0 auto 120px auto;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px 30px;
+      backdrop-filter: blur(14px);
+      transition: all 0.3s;
+    }
+
+    .discord-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 25px rgba(255, 143, 179, 0.35);
+    }
+
+    .discord-card iframe {
+      width: 100%;
+      height: 500px;
       border-radius: 12px;
-      margin-top: 30px;
+      border: none;
     }
 
-    /* Responsive */
+    /* Mobile */
     @media screen and (max-width: 768px) {
+      h1 {
+        font-size: 50px;
+      }
+
       nav ul {
         flex-direction: column;
         gap: 15px;
       }
 
-      h1 {
-        font-size: 50px;
+      .discord-card {
+        width: 90%;
+        padding: 35px 20px;
       }
 
-      iframe {
-        width: 90%;
+      .discord-card iframe {
         height: 400px;
       }
     }
@@ -86,12 +146,10 @@
 
   <h1>Server Announcements</h1>
 
-  <!-- Replace YOUR_SERVER_ID with your actual Discord server ID -->
-  <iframe 
-    src="https://discord.com/widget?id=YOUR_SERVER_ID&theme=dark"
-    width="350"
-    height="500">
-  </iframe>
+  <div class="discord-card">
+    <!-- Replace YOUR_SERVER_ID with your actual Discord server ID -->
+    <iframe src="https://discord.com/widget?id=YOUR_SERVER_ID&theme=dark"></iframe>
+  </div>
 
 </body>
 
